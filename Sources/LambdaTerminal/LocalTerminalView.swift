@@ -1,10 +1,28 @@
 import AppKit
+import LambdaTerminalCore
 import SwiftTerm
 import SwiftUI
 
 struct LocalTerminalView: NSViewRepresentable {
-    let configuration: SessionLaunchConfiguration
+    let process: ProcessLaunchConfiguration
+    let chrome: TerminalChrome
     var onTitleChange: ((String) -> Void)?
+
+    init(launchPlan: SessionLaunchPlan, onTitleChange: ((String) -> Void)? = nil) {
+        self.process = launchPlan.process
+        self.chrome = launchPlan.chrome
+        self.onTitleChange = onTitleChange
+    }
+
+    init(
+        process: ProcessLaunchConfiguration,
+        chrome: TerminalChrome,
+        onTitleChange: ((String) -> Void)? = nil
+    ) {
+        self.process = process
+        self.chrome = chrome
+        self.onTitleChange = onTitleChange
+    }
 
     func makeNSView(context: Context) -> LocalProcessTerminalView {
         let view = LocalProcessTerminalView(frame: .zero)
@@ -18,7 +36,7 @@ struct LocalTerminalView: NSViewRepresentable {
 
     func updateNSView(_ nsView: LocalProcessTerminalView, context: Context) {
         context.coordinator.onTitleChange = onTitleChange
-        context.coordinator.startIfNeeded(view: nsView, configuration: configuration)
+        context.coordinator.update(view: nsView, process: process, chrome: chrome)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -28,24 +46,36 @@ struct LocalTerminalView: NSViewRepresentable {
     final class Coordinator: NSObject, LocalProcessTerminalViewDelegate {
         weak var terminalView: LocalProcessTerminalView?
         var onTitleChange: ((String) -> Void)?
-        var startedConfiguration: SessionLaunchConfiguration?
+        var startedProcess: ProcessLaunchConfiguration?
+        var appliedChrome: TerminalChrome?
 
-        func startIfNeeded(view: LocalProcessTerminalView, configuration: SessionLaunchConfiguration) {
-            guard startedConfiguration != configuration else { return }
-            startedConfiguration = configuration
-            TerminalTheme.apply(to: view, preset: configuration.theme)
-            TerminalTheme.applyFontSize(CGFloat(configuration.fontSize), to: view)
+        func update(
+            view: LocalProcessTerminalView,
+            process: ProcessLaunchConfiguration,
+            chrome: TerminalChrome
+        ) {
+            if startedProcess != process {
+                startedProcess = process
+                appliedChrome = chrome
+                TerminalTheme.apply(to: view, chrome: chrome)
 
-            // startProcess needs a laid-out view; defer one run loop turn.
-            DispatchQueue.main.async {
-                let envArray = configuration.environment.map { "\($0.key)=\($0.value)" }
-                view.startProcess(
-                    executable: configuration.shell,
-                    args: ["-l"],
-                    environment: envArray,
-                    execName: nil,
-                    currentDirectory: configuration.currentDirectory
-                )
+                // startProcess needs a laid-out view; defer one run loop turn.
+                DispatchQueue.main.async {
+                    let envArray = process.environment.map { "\($0.key)=\($0.value)" }
+                    view.startProcess(
+                        executable: process.shell,
+                        args: ["-l"],
+                        environment: envArray,
+                        execName: nil,
+                        currentDirectory: process.currentDirectory
+                    )
+                }
+                return
+            }
+
+            if appliedChrome != chrome {
+                appliedChrome = chrome
+                TerminalTheme.apply(to: view, chrome: chrome)
             }
         }
 

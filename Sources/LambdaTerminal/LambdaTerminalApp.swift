@@ -17,6 +17,7 @@ struct LambdaTerminalApp: App {
                 }
             }
             .environmentObject(appModel)
+            .background(PendingWindowOpener())
             .sheet(isPresented: $showNewWindowSheet) {
                 NewWindowSheet(
                     defaultProfileID: appModel.settings.defaultProfileID,
@@ -40,7 +41,7 @@ struct LambdaTerminalApp: App {
 
             CommandMenu("Session") {
                 Button("New Tab") {
-                    newTab(inFrontWindow: true)
+                    newTab()
                 }
                 .keyboardShortcut("t", modifiers: [.command])
 
@@ -64,17 +65,10 @@ struct LambdaTerminalApp: App {
         }
     }
 
-    private func newTab(inFrontWindow: Bool) {
-        let windowID = appModel.windows.last?.id
-        guard let windowID else {
-            _ = appModel.openNewWindow(profileID: appModel.settings.defaultProfileID)
-            if let id = appModel.windows.last?.id {
-                appDelegate.openTerminalWindow(id: id)
-            }
-            return
+    private func newTab() {
+        if let windowID = appModel.openNewTabInCommandTarget() {
+            appModel.requestOpenWindow(id: windowID)
         }
-        appModel.openNewTab(in: windowID)
-        appDelegate.openTerminalWindow(id: windowID)
     }
 
     private func openProjectDirectory() {
@@ -83,29 +77,15 @@ struct LambdaTerminalApp: App {
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
         panel.message = "Choose a project root for this terminal session"
-        if panel.runModal() == .OK, let url = panel.url {
-            let existingID = appModel.windows.last?.id
-            appModel.openInProject(windowID: existingID, directory: url)
-            if let id = appModel.windows.last?.id {
-                appDelegate.openTerminalWindow(id: id)
-            }
+        if panel.runModal() == .OK, let url = panel.url, let windowID = appModel.openInProject(directory: url) {
+            appModel.requestOpenWindow(id: windowID)
         }
     }
 }
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    weak var appModel: AppModel?
-
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
     }
-
-    func openTerminalWindow(id: UUID) {
-        NotificationCenter.default.post(name: .openTerminalWindow, object: id)
-    }
-}
-
-extension Notification.Name {
-    static let openTerminalWindow = Notification.Name("openTerminalWindow")
 }

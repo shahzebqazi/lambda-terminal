@@ -8,9 +8,14 @@ final class AppModel: ObservableObject {
     @Published var settings: AppSettings
     @Published var profilesDocument: ProfilesDocument
     @Published var windows: [WindowSessionBundle] = []
+    @Published var focusedWindowID: UUID?
+    @Published private(set) var persistenceError: String?
+    @Published var pendingWindowIDToOpen: UUID?
     @Published var xdgAuditMarkdown: String?
     @Published var showXDGAuditSheet = false
 
+    private var state: TerminalAppState
+    private var isSyncingFromState = false
     private let profileStore: ProfileStore
     private let settingsStore: SettingsStore
 
@@ -20,59 +25,109 @@ final class AppModel: ObservableObject {
     ) {
         self.profileStore = profileStore
         self.settingsStore = settingsStore
-        settings = (try? settingsStore.load()) ?? AppSettings()
-        profilesDocument = (try? profileStore.load()) ?? ProfilesDocument(version: 1, profiles: ProfileStore.builtInProfiles())
+
+        var initialState = TerminalAppState()
+        do {
+            initialState.settings = try settingsStore.load()
+        } catch {
+            initialState.recordPersistenceFailure(error)
+        }
+        do {
+            initialState.profilesDocument = try profileStore.load()
+        } catch {
+            initialState.recordPersistenceFailure(error)
+        }
+
+        state = initialState
+        settings = initialState.settings
+        profilesDocument = initialState.profilesDocument
+        windows = initialState.windows
+        focusedWindowID = initialState.focusedWindowID
+        persistenceError = initialState.persistenceError
     }
 
     var profiles: [TerminalProfile] {
-        profilesDocument.profiles
+        state.profiles
     }
 
     func profile(id: String) -> TerminalProfile? {
-        profiles.first { $0.id == id }
+        state.profile(id: id)
+    }
+
+    func commandTargetWindowID() -> UUID? {
+        state.commandTargetWindowID()
+    }
+
+    func setFocusedWindow(_ id: UUID?) {
+        mutateState { $0.setFocusedWindow(id) }
+    }
+
+    func requestOpenWindow(id: UUID) {
+        pendingWindowIDToOpen = id
+    }
+
+    func updateSessionTitle(windowID: UUID, sessionID: UUID, title: String) {
+        guard !title.isEmpty,
+              let windowIndex = state.windows.firstIndex(where: { $0.id == windowID }),
+              let tabIndex = state.windows[windowIndex].tabs.firstIndex(where: { $0.id == sessionID }) else {
+            return
+        }
+        mutateState { $0.windows[windowIndex].tabs[tabIndex].title = title }
     }
 
     func persistSettings() {
-        try? settingsStore.save(settings)
-    }
-
-    func openInitialWindowIfNeeded() {
-        if windows.isEmpty {
-            openNewWindow(profileID: settings.defaultProfileID)
+        state.settings = settings
+        do {
+            try settingsStore.save(settings)
+            state.clearPersistenceError()
+            persistenceError = nil
+        } catch {
+            state.recordPersistenceFailure(error)
+            persistenceError = state.persistenceError
         }
     }
 
     @discardableResult
     func openNewWindow(profileID: String, workingDirectory: URL? = nil) -> UUID? {
-        guard let profile = profile(id: profileID) else { return nil }
-        let cwd = workingDirectory ?? settingsStore.resolvedWorkingDirectory(for: profile, settings: settings)
-        settingsStore.rememberWorkingDirectory(profileID: profile.id, path: cwd, settings: &settings)
+        var windowID: UUID?
+        mutateState {
+            windowID = $0.openNewWindow(
+                profileID: profileID,
+                workingDirectory: workingDirectory,
+                settingsStore: settingsStore
+            )
+        }
         persistSettings()
-        let bundle = WindowSessionBundle(tabs: [TerminalSession(profile: profile, workingDirectory: cwd)])
-        windows.append(bundle)
-        return bundle.id
+        return windowID
     }
 
     func openNewTab(in windowID: UUID, workingDirectory: URL? = nil) {
-        guard let index = windows.firstIndex(where: { $0.id == windowID }),
-              let active = windows[index].tabs.last else { return }
-        let cwd = workingDirectory ?? active.workingDirectory
-        let session = TerminalSession(profile: active.profile, workingDirectory: cwd)
-        windows[index].tabs.append(session)
-        settingsStore.rememberWorkingDirectory(profileID: active.profile.id, path: cwd, settings: &settings)
+        mutateState {
+            _ = $0.openNewTab(in: windowID, workingDirectory: workingDirectory, settingsStore: settingsStore)
+        }
         persistSettings()
     }
 
-    func openInProject(windowID: UUID?, directory: URL) {
-        if let windowID, let index = windows.firstIndex(where: { $0.id == windowID }),
-           let active = windows[index].tabs.last {
-            let session = TerminalSession(profile: active.profile, workingDirectory: directory)
-            windows[index].tabs.append(session)
-            settingsStore.rememberWorkingDirectory(profileID: active.profile.id, path: directory, settings: &settings)
-            persistSettings()
-            return
+    @discardableResult
+    func openNewTabInCommandTarget(workingDirectory: URL? = nil) -> UUID? {
+        mutateState {
+            _ = $0.openNewTabInCommandTarget(workingDirectory: workingDirectory)
         }
-        _ = openNewWindow(profileID: settings.defaultProfileID, workingDirectory: directory)
+        persistSettings()
+        return state.focusedWindowID
+    }
+
+    @discardableResult
+    func openInProject(directory: URL) -> UUID? {
+        mutateState {
+            _ = $0.openInProject(directory: directory, settingsStore: settingsStore)
+        }
+        persistSettings()
+        return state.focusedWindowID
+    }
+
+    func selectTab(windowID: UUID, tabID: UUID) {
+        mutateState { $0.selectTab(windowID: windowID, tabID: tabID) }
     }
 
     func runXDGAudit() {
@@ -93,5 +148,20 @@ final class AppModel: ObservableObject {
             xdgAuditMarkdown = "Audit failed: \(error.localizedDescription)"
             showXDGAuditSheet = true
         }
+    }
+
+    private func mutateState(_ body: (inout TerminalAppState) -> Void) {
+        body(&state)
+        publishFromState()
+    }
+
+    private func publishFromState() {
+        isSyncingFromState = true
+        settings = state.settings
+        profilesDocument = state.profilesDocument
+        windows = state.windows
+        focusedWindowID = state.focusedWindowID
+        persistenceError = state.persistenceError
+        isSyncingFromState = false
     }
 }

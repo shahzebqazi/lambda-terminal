@@ -7,11 +7,13 @@ public struct SessionEnvironment: Equatable, Sendable {
 
     public init(
         profile: TerminalProfile,
+        workingDirectory: URL? = nil,
         inherited: [String: String] = ProcessInfo.processInfo.environment,
         home: URL = FileManager.default.homeDirectoryForCurrentUser
     ) {
         var env = inherited
         let xdg = XDGPaths(overrides: inherited)
+        let cwd = workingDirectory ?? profile.resolvedWorkingDirectory(home: home)
 
         if profile.injectXDGEnvironment {
             for (key, value) in xdg.environmentVariables {
@@ -26,7 +28,7 @@ public struct SessionEnvironment: Equatable, Sendable {
         }
 
         env["LAMBDA_TERMINAL_PROFILE"] = profile.id
-        env["PWD"] = profile.resolvedWorkingDirectory(home: home).path
+        env["PWD"] = cwd.path
 
         merged = env
     }

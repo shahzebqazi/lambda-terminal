@@ -1,8 +1,17 @@
 import AppKit
-import SwiftTerm
 import LambdaTerminalCore
+import SwiftTerm
 
 enum TerminalTheme {
+    static func apply(to terminal: LocalProcessTerminalView, chrome: TerminalChrome) {
+        apply(to: terminal, preset: chrome.theme, fontSize: chrome.fontSize)
+    }
+
+    static func apply(to terminal: LocalProcessTerminalView, preset: ThemePreset, fontSize: Double) {
+        apply(to: terminal, preset: preset)
+        applyFontSize(CGFloat(fontSize), to: terminal)
+    }
+
     static func apply(to terminal: LocalProcessTerminalView, preset: ThemePreset) {
         switch preset {
         case .dracula:

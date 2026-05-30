@@ -35,5 +35,15 @@ let package = Package(
             dependencies: ["LambdaTerminalCore"],
             path: "Tests/LambdaTerminalCoreTests"
         ),
+        .testTarget(
+            name: "LambdaTerminalIntegrationTests",
+            dependencies: ["LambdaTerminalCore"],
+            path: "Tests/LambdaTerminalIntegrationTests"
+        ),
+        .testTarget(
+            name: "LambdaTerminalAcceptanceTests",
+            dependencies: ["LambdaTerminalCore"],
+            path: "Tests/LambdaTerminalAcceptanceTests"
+        ),
     ]
 )
