@@ -4,7 +4,8 @@ Static marketing page for λ Terminal, deployed with GitHub Pages.
 
 ## Live
 
-https://shahzebqazi.github.io/lambda-terminal/
+- https://sqazi.sh/lambda-terminal/
+- https://shahzebqazi.github.io/lambda-terminal/ (redirects to the custom domain)
 
 ## Local preview
 

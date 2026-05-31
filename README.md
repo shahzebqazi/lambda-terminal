@@ -8,11 +8,12 @@
 
 ## Website
 
-**Live site:** https://shahzebqazi.github.io/lambda-terminal/
+**Live site:** https://sqazi.sh/lambda-terminal/  
+**GitHub Pages mirror:** https://shahzebqazi.github.io/lambda-terminal/ (redirects to the custom domain)
 
 Retro Apple–inspired project page: hero, feature grid, screenshot gallery, build steps, and doc links. Source lives in [`docs/review/`](docs/review/).
 
-[![λ Terminal preview — main session](docs/review/screenshots/terminal-window.png)](https://shahzebqazi.github.io/lambda-terminal/)
+[![λ Terminal preview — main session](docs/review/screenshots/terminal-window.png)](https://sqazi.sh/lambda-terminal/)
 
 Local preview after clone:
 
@@ -24,15 +25,15 @@ open http://127.0.0.1:8766/docs/review/
 
 ## Screenshots
 
-Full gallery on the [live site](https://shahzebqazi.github.io/lambda-terminal/#screenshots). Quick look:
+Full gallery on the [live site](https://sqazi.sh/lambda-terminal/#screenshots). Quick look:
 
 | Main session | Menu bar & menus | Desktop context |
 | --- | --- | --- |
-| [![Main terminal window](docs/review/screenshots/terminal-window.png)](https://shahzebqazi.github.io/lambda-terminal/#screenshots) | [![Menu bar and Developer menu](docs/review/screenshots/terminal-menu-bar.png)](https://shahzebqazi.github.io/lambda-terminal/#screenshots) | [![Terminal on macOS desktop](docs/review/screenshots/terminal-desktop.png)](https://shahzebqazi.github.io/lambda-terminal/#screenshots) |
+| [![Main terminal window](docs/review/screenshots/terminal-window.png)](https://sqazi.sh/lambda-terminal/#screenshots) | [![Menu bar and Developer menu](docs/review/screenshots/terminal-menu-bar.png)](https://sqazi.sh/lambda-terminal/#screenshots) | [![Terminal on macOS desktop](docs/review/screenshots/terminal-desktop.png)](https://sqazi.sh/lambda-terminal/#screenshots) |
 
 | New window sheet | Settings |
 | --- | --- |
-| [![New window profile picker](docs/review/screenshots/new-window-sheet.png)](https://shahzebqazi.github.io/lambda-terminal/#screenshots) | [![Settings panel](docs/review/screenshots/settings.png)](https://shahzebqazi.github.io/lambda-terminal/#screenshots) |
+| [![New window profile picker](docs/review/screenshots/new-window-sheet.png)](https://sqazi.sh/lambda-terminal/#screenshots) | [![Settings panel](docs/review/screenshots/settings.png)](https://sqazi.sh/lambda-terminal/#screenshots) |
 
 ## Features (v0.1)
 
