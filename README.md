@@ -8,8 +8,20 @@
 
 ## Screenshots
 
-<!-- add screenshot: run `swift run LambdaTerminal` and capture main window -->
-_Screenshots coming soon — build and run locally to preview Dracula-themed sessions._
+| Main session | Menu bar & menus | Desktop context |
+| --- | --- | --- |
+| ![Main terminal window](docs/review/screenshots/terminal-window.png) | ![Menu bar and Developer menu](docs/review/screenshots/terminal-menu-bar.png) | ![Terminal on macOS desktop](docs/review/screenshots/terminal-desktop.png) |
+
+| New window sheet | Settings |
+| --- | --- |
+| ![New window profile picker](docs/review/screenshots/new-window-sheet.png) | ![Settings panel](docs/review/screenshots/settings.png) |
+
+Local preview site (retro Apple layout): open `docs/review/index.html` or serve the repo and visit `/docs/review/`.
+
+```bash
+python3 -m http.server 8766 --directory .
+# http://127.0.0.1:8766/docs/review/
+```
 
 ## Features (v0.1)
 

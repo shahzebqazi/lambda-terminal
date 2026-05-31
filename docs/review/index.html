@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>λ Terminal</title>
+  <meta name="description" content="macOS terminal with profiles, XDG env injection, and developer-workflow UX.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <symbol id="icon-apple" viewBox="0 0 16 16"><rect width="16" height="16" fill="#111"/><path fill="#63ba4e" d="M8 2 10 6h4l-3 3 1 5-4-2-4 2 1-5-3-3h4z"/></symbol>
+    <symbol id="icon-terminal" viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="12" fill="#c0c0c0" stroke="#404040"/><rect x="2" y="3" width="12" height="2" fill="#fff"/><rect x="3" y="7" width="5" height="1" fill="#0066cc"/><rect x="3" y="9" width="8" height="1" fill="#111"/><rect x="3" y="11" width="6" height="1" fill="#111"/></symbol>
+    <symbol id="icon-folder" viewBox="0 0 16 16"><rect x="1" y="4" width="14" height="10" fill="#fbd905" stroke="#404040"/><rect x="1" y="2" width="7" height="3" fill="#ff9500" stroke="#404040"/></symbol>
+    <symbol id="icon-doc" viewBox="0 0 16 16"><rect x="3" y="1" width="10" height="14" fill="#fff" stroke="#404040"/><rect x="5" y="4" width="6" height="1" fill="#404040"/><rect x="5" y="6" width="6" height="1" fill="#404040"/><rect x="5" y="8" width="4" height="1" fill="#404040"/></symbol>
+    <symbol id="icon-profile" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" fill="#0066cc" stroke="#404040"/><rect x="5" y="5" width="6" height="1" fill="#fff"/><rect x="5" y="7" width="6" height="1" fill="#fff"/><rect x="5" y="9" width="4" height="1" fill="#fff"/></symbol>
+    <symbol id="icon-audit" viewBox="0 0 16 16"><rect x="2" y="1" width="12" height="14" fill="#ece9e4" stroke="#404040"/><rect x="4" y="4" width="8" height="1" fill="#63ba4e"/><rect x="4" y="6" width="8" height="1" fill="#404040"/><rect x="4" y="8" width="8" height="1" fill="#404040"/><rect x="4" y="10" width="5" height="1" fill="#404040"/></symbol>
+  </svg>
+
+  <header class="site-nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top">
+        <svg class="icon" aria-hidden="true"><use href="#icon-apple"></use></svg>
+        λ Terminal
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#build">Build</a>
+        <a href="#docs">Docs</a>
+        <a href="https://github.com/shahzebqazi/lambda-terminal">GitHub</a>
+      </nav>
+    </div>
+    <div class="rainbow-rule" aria-hidden="true"></div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-badge">
+        <svg class="icon" aria-hidden="true"><use href="#icon-terminal"></use></svg>
+        v0.1 · macOS 14+
+      </div>
+      <h1>λ Terminal</h1>
+      <p class="tagline">Profiles. Predictable XDG environments. Session semantics that match how you already work.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#build">Build &amp; run</a>
+        <a class="btn" href="https://github.com/shahzebqazi/lambda-terminal">View on GitHub</a>
+      </div>
+    </section>
+
+    <section class="section hero-shot">
+      <div class="shot-grid single">
+        <figure class="mac-window">
+          <div class="title-bar">
+            <span class="close-box" aria-hidden="true"></span>
+            <span class="title">sqazi@Shahzebs-MacBook-Pro.local | ~/Git</span>
+          </div>
+          <img src="screenshots/terminal-window.png" alt="λ Terminal main window with Dracula-themed shell session in ~/Git" width="1470" height="1832" loading="eager">
+        </figure>
+        <figcaption class="caption">Dracula-themed sessions with profile-aware cwd and shell startup.</figcaption>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="section-head">
+        <h2>Think different about terminals.</h2>
+        <p>Not another config format — a small macOS app that launches shells with the conventions terminal power-users already carry.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <svg class="icon" aria-hidden="true"><use href="#icon-profile"></use></svg>
+          <h3>Four profiles</h3>
+          <p><code>default</code>, <code>dev</code>, <code>lightweight</code>, and <code>ai</code> — persisted under <code>~/.config/lambda-terminal/</code>.</p>
+        </article>
+        <article class="feature-card">
+          <svg class="icon" aria-hidden="true"><use href="#icon-folder"></use></svg>
+          <h3>Project roots</h3>
+          <p>⌘N picks profile + cwd. ⇧⌘O opens a project directory. Tabs inherit the active profile.</p>
+        </article>
+        <article class="feature-card">
+          <svg class="icon" aria-hidden="true"><use href="#icon-audit"></use></svg>
+          <h3>XDG audit</h3>
+          <p>Developer → XDG Home Audit writes a Markdown report to <code>~/.local/state/lambda-terminal/xdg-report.md</code>.</p>
+        </article>
+      </div>
+      <div class="spec-strip" style="margin-top:28px">
+        <div class="spec"><strong>4</strong><span>built-in profiles</span></div>
+        <div class="spec"><strong>⌘N</strong><span>new window sheet</span></div>
+        <div class="spec"><strong>⌘T</strong><span>new tab</span></div>
+        <div class="spec"><strong>46</strong><span>automated tests</span></div>
+      </div>
+    </section>
+
+    <section class="section band" id="screenshots">
+      <div class="section-head">
+        <h2>Designed for the way you ship.</h2>
+        <p>Apple-clean layout. Classic Mac personality. Real local sessions — not mockups.</p>
+      </div>
+      <div class="shot-grid">
+        <figure>
+          <div class="mac-window">
+            <div class="title-bar">
+              <span class="close-box" aria-hidden="true"></span>
+              <span class="title">LambdaTerminal — menu bar &amp; session chrome</span>
+            </div>
+            <img src="screenshots/terminal-menu-bar.png" alt="λ Terminal with macOS menu bar showing Session and Developer menus" width="1470" height="1832" loading="lazy">
+          </div>
+          <figcaption class="caption">Native menus for Session, Developer, and profile-aware workflows.</figcaption>
+        </figure>
+        <figure>
+          <div class="mac-window">
+            <div class="title-bar">
+              <span class="close-box" aria-hidden="true"></span>
+              <span class="title">LambdaTerminal — on the desktop</span>
+            </div>
+            <img src="screenshots/terminal-desktop.png" alt="λ Terminal window on a macOS desktop beside project folders" width="1470" height="1832" loading="lazy">
+          </div>
+          <figcaption class="caption">Sits alongside your existing desktop workflow — portfolio OSS, not a Terminal.app replacement claim.</figcaption>
+        </figure>
+      </div>
+      <div class="shot-grid" style="margin-top:28px">
+        <figure>
+          <div class="mac-window">
+            <div class="title-bar">
+              <span class="close-box" aria-hidden="true"></span>
+              <span class="title">New Window…</span>
+            </div>
+            <img src="screenshots/new-window-sheet.png" alt="New window sheet for choosing profile and working directory" loading="lazy">
+          </div>
+          <figcaption class="caption">Profile + cwd picker on ⌘N.</figcaption>
+        </figure>
+        <figure>
+          <div class="mac-window">
+            <div class="title-bar">
+              <span class="close-box" aria-hidden="true"></span>
+              <span class="title">Settings</span>
+            </div>
+            <img src="screenshots/settings.png" alt="Settings panel for default profile, font size, and Dracula theme preset" loading="lazy">
+          </div>
+          <figcaption class="caption">Default profile, font size, and theme preset.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="build">
+      <div class="section-head">
+        <h2>Build it locally.</h2>
+        <p>Swift Package Manager. Unsigned debug builds are expected for v0.1.</p>
+      </div>
+      <div class="docs-panel">
+        <pre class="code-block"><code>git clone https://github.com/shahzebqazi/lambda-terminal.git
+cd lambda-terminal
+swift build
+swift run LambdaTerminal
+
+swift test
+swift run xdg audit --stdout</code></pre>
+      </div>
+    </section>
+
+    <section class="section" id="docs">
+      <div class="section-head">
+        <h2>Documentation</h2>
+        <p>Architecture, profiles, and roadmap live in the repo.</p>
+      </div>
+      <ul class="docs-list">
+        <li><a href="../../README.md"><svg class="icon" aria-hidden="true"><use href="#icon-doc"></use></svg> README.md</a></li>
+        <li><a href="../ARCHITECTURE.md"><svg class="icon" aria-hidden="true"><use href="#icon-doc"></use></svg> docs/ARCHITECTURE.md</a></li>
+        <li><a href="../PROFILES.md"><svg class="icon" aria-hidden="true"><use href="#icon-doc"></use></svg> docs/PROFILES.md</a></li>
+        <li><a href="../ROADMAP.md"><svg class="icon" aria-hidden="true"><use href="#icon-doc"></use></svg> docs/ROADMAP.md</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="rainbow-rule" aria-hidden="true"></div>
+    <p><strong>λ Terminal</strong> · experimental portfolio project · MIT</p>
+    <p><a href="https://github.com/shahzebqazi/lambda-terminal">github.com/shahzebqazi/lambda-terminal</a> · <a href="https://sqazi.sh">sqazi.sh</a></p>
+    <p class="small">Local preview · <a href="http://127.0.0.1:8765/">benchmark-euterpea</a> on port 8765</p>
+  </footer>
+</body>
+</html>

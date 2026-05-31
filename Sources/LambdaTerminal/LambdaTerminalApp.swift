@@ -17,7 +17,10 @@ struct LambdaTerminalApp: App {
                 }
             }
             .environmentObject(appModel)
-            .background(PendingWindowOpener())
+            .background {
+                PendingWindowOpener()
+                    .environmentObject(appModel)
+            }
             .sheet(isPresented: $showNewWindowSheet) {
                 NewWindowSheet(
                     defaultProfileID: appModel.settings.defaultProfileID,
