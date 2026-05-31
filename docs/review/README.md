@@ -1,21 +1,28 @@
-# Local preview site
+# Project site
 
-Static marketing/docs preview for λ Terminal. Not deployed to GitHub Pages yet.
+Static marketing page for λ Terminal, deployed with GitHub Pages.
 
-## Open locally
+## Live
+
+https://shahzebqazi.github.io/lambda-terminal/
+
+## Local preview
 
 From the repo root:
 
 ```bash
 python3 -m http.server 8766 --directory .
+open http://127.0.0.1:8766/docs/review/
 ```
 
-Then visit:
+Use port **8766** if another local site is already on **8765**.
 
-- http://127.0.0.1:8766/docs/review/
+## Deploy
 
-Use port **8766** if another local site (for example benchmark-euterpea) is already on **8765**.
+`.github/workflows/pages.yml` publishes this directory (`docs/review/`) to GitHub Pages on pushes to `main`.
 
-## Screenshots
+## Assets
 
-Captured from a local debug build. Source files live in `screenshots/` and are referenced from `README.md` and `index.html`.
+- `index.html` — landing page
+- `assets/` — CSS and icons
+- `screenshots/` — captured from a local debug build
