@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 4" role="presentation" aria-hidden="true">
+  <rect width="200" height="4" fill="#63ba4e"/>
+  <rect x="200" width="200" height="4" fill="#fbd905"/>
+  <rect x="400" width="200" height="4" fill="#ff9500"/>
+  <rect x="600" width="200" height="4" fill="#ff0801"/>
+  <rect x="800" width="200" height="4" fill="#9700c9"/>
+  <rect x="1000" width="200" height="4" fill="#0066cc"/>
+</svg>
